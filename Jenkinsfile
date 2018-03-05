@@ -1,12 +1,10 @@
 #!/usr/local/bin/groovy
 
 def label = "worker-${UUID.randomUUID().toString()}"
-
 def version = "latest"
-def imageName = "dsp"
 def region = "eu-west-2"
 
-def buildAndPush(String imageName) {
+def buildAndPush(String imageName, String version, String region) {
     withCredentials([
             string(credentialsId: 'aws_ecr_password', variable: 'awsEcrPassword'),
             string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')
@@ -36,10 +34,10 @@ podTemplate(
                 string(credentialsId: 'aws_ecr_password', variable: 'awsEcrPassword'),
                 string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')
         ]) {
-            buildAndPush("app")
-            buildAndPush("db")
-            buildAndPush("configurer")
-            buildAndPush("blank-config")
+            buildAndPush("app", version, region)
+            buildAndPush("db", version, region)
+            buildAndPush("configurer", version, region)
+            buildAndPush("blank-config", version, region)
         }
     }
 }
