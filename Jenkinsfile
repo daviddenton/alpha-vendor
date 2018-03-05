@@ -7,12 +7,16 @@ def region = "eu-west-2"
 def buildAndPush(String imageName, String version, String region) {
     stage("Build/push ${imageName} image") {
         container('docker') {
-            def imageTag = "${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/vendor-${imageName}:${version}"
-            sh "docker build -t ${imageTag} ${imageName}/."
+            withCredentials([
+                    string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')
+            ]) {
+                def imageTag = "${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/vendor-${imageName}:${version}"
+                sh "docker build -t ${imageTag} ${imageName}/."
 
-            withAWS(credentials: 'aws_credentials') {
-                sh ecrLogin()
-                sh "docker push ${imageTag}"
+                withAWS(credentials: 'aws_credentials') {
+                    sh ecrLogin()
+                    sh "docker push ${imageTag}"
+                }
             }
         }
     }
