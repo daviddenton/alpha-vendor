@@ -36,12 +36,10 @@ podTemplate(
                 string(credentialsId: 'aws_ecr_password', variable: 'awsEcrPassword'),
                 string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')
         ]) {
-            parallel {
-                buildAndPush("app")
-                buildAndPush("db")
-                buildAndPush("configurator")
-                buildAndPush("blank-config")
-            }
+            buildAndPush("app")
+            buildAndPush("db")
+            buildAndPush("configurer")
+            buildAndPush("blank-config")
         }
     }
 }
