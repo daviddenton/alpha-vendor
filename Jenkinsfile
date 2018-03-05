@@ -5,16 +5,14 @@ def version = "latest"
 def region = "eu-west-2"
 
 def buildAndPush(String imageName, String version, String region) {
-    withCredentials([string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')]) {
-        stage("Build/push ${imageName} image") {
-            container('docker') {
-                def imageTag = "${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/vendor/${imageName}:${version}"
-                sh "docker build -t ${imageTag} ${imageName}/."
+    stage("Build/push ${imageName} image") {
+        container('docker') {
+            def imageTag = "${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/vendor-${imageName}:${version}"
+            sh "docker build -t ${imageTag} ${imageName}/."
 
-                withAWS(credentials: 'aws_credentials') {
-                    sh ecrLogin()
-                    sh "docker push ${imageTag}"
-                }
+            withAWS(credentials: 'aws_credentials') {
+                sh ecrLogin()
+                sh "docker push ${imageTag}"
             }
         }
     }
