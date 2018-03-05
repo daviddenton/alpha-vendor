@@ -10,7 +10,7 @@ def buildAndPush(String imageName, String version, String region) {
             withCredentials([
                     string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')
             ]) {
-                def imageTag = "${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/vendor-${imageName}:${version}"
+                def imageTag = "${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/${imageName}:${version}"
                 sh "docker build -t ${imageTag} ${imageName}/."
 
                 withAWS(credentials: 'aws_credentials') {
@@ -29,9 +29,9 @@ podTemplate(
     node(label) {
         checkout([$class    : 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false,
                   extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/daviddenton/alpha-vendor']]])
-        buildAndPush("app", version, region)
-        buildAndPush("db", version, region)
-        buildAndPush("configurer", version, region)
-        buildAndPush("blank-config", version, region)
+        buildAndPush("vendor-app", version, region)
+        buildAndPush("vendor-db", version, region)
+        buildAndPush("vendor-configurer", version, region)
+        buildAndPush("vendor-blank-config", version, region)
     }
 }
