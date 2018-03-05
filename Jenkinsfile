@@ -13,7 +13,7 @@ def buildAndPush(String imageName) {
     ]) {
         stage("Build/push ${imageName} image") {
             container('docker') {
-                def imageTag = "${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/${imageName}:${version}"
+                def imageTag = "${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/vendor/${imageName}:${version}"
                 sh "docker build -t ${imageTag} ${imageName}/."
 
                 withAWS(credentials: 'aws_credentials') {
